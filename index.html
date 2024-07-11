@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registered Form</title>
+    <!--css -->
+    <link rel="stylesheet" href="style.css">
+    <!-- daisy UI cdn -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- tailwind custom class -->
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                clifford: '#da373d',
+              }
+            }
+          }
+        }
+      </script>
+</head>
+<body class="bg-cover h-screen" style="background-image: url('../images/pexels-pixabay-268533.jpg');">
+    <!-- Register Form -->
+    <main id="registerFormPage" class="container mx-auto pt-20">
+        <div class="bg-white p-8 rounded shadow-md w-full max-w-sm mx-auto ">
+            <h2 class="text-2xl font-bold mb-6 text-center">Register</h2>
+            <form id="registrationForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Name</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="name" type="text" placeholder="Username" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="father-name">Father-Name</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="father-name" type="text" placeholder="Father-Name" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="mother-name">Mother-Name</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="mother-name" type="text" placeholder="Mother-Name" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">Phone-Number</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="phone" type="number" placeholder="Phone" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Email</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" placeholder="Email" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="address">Address</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="address" type="text" placeholder="Address" required>
+                </div>
+                <div class="flex items-center justify-between">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">Submit</button>
+                </div>
+            </form>
+            <p id="successMessage" class="text-green-500 text-center mt-4 hidden">Registration Successful!</p>
+        </div>
+    </main>
+    <!-- Registration List -->
+    <section id="registerListPage" class="container mx-auto pt-20 hidden">
+        <div class="bg-white p-8 rounded shadow-md w-full max-w-3xl mx-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">Registration List</h2>
+                
+            </div>
+            <div class="overflow-x-auto">
+                <table class="table w-full">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Name</th>
+                            <th>Phone Number</th>
+                            <th>Address</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registrationTableBody">
+                        <!-- Rows will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+            <button id="backButton" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-9">Back</button>
+        </div>
+    </section>
+    <script>
+        let editingRow = null;
+
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get form values
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+
+            if (editingRow) {
+                // Update existing row
+                editingRow.children[1].innerText = name;
+                editingRow.children[2].innerText = phone;
+                editingRow.children[3].innerText = address;
+                editingRow = null;
+            } else {
+                // Add new row to the table
+                const tableBody = document.getElementById('registrationTableBody');
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${tableBody.children.length + 1}</td>
+                    <td>${name}</td>
+                    <td>${phone}</td>
+                    <td>${address}</td>
+                    <td>
+                        <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline" onclick="editRow(this)">Edit</button>
+                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline" onclick="deleteRow(this)">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(newRow);
+            }
+
+            // Clear the form
+            document.getElementById('registrationForm').reset();
+
+            // Show success message
+            document.getElementById('successMessage').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('successMessage').classList.add('hidden');
+            }, 2000);
+
+            // Hide the register form page
+            document.getElementById('registerFormPage').classList.add('hidden');
+            // Show the registration list page
+            document.getElementById('registerListPage').classList.remove('hidden');
+        });
+
+        function editRow(button) {
+            // Get the row data
+            const row = button.parentElement.parentElement;
+            const name = row.children[1].innerText;
+            const phone = row.children[2].innerText;
+            const address = row.children[3].innerText;
+
+            // Fill the form with row data
+            document.getElementById('name').value = name;
+            document.getElementById('phone').value = phone;
+            document.getElementById('address').value = address;
+
+            // Set the editing row
+            editingRow = row;
+
+            // Show the register form page
+            document.getElementById('registerFormPage').classList.remove('hidden');
+            // Hide the registration list page
+            document.getElementById('registerListPage').classList.add('hidden');
+        }
+
+        function deleteRow(button) {
+            // Remove the row from the table
+            const row = button.parentElement.parentElement;
+            row.remove();
+
+            // Update row numbers
+            const tableBody = document.getElementById('registrationTableBody');
+            for (let i = 0; i < tableBody.children.length; i++) {
+                tableBody.children[i].children[0].innerText = i + 1;
+            }
+        }
+
+        document.getElementById('backButton').addEventListener('click', function() {
+            // Hide the registration list page
+            document.getElementById('registerListPage').classList.add('hidden');
+            // Show the register form page
+            document.getElementById('registerFormPage').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
